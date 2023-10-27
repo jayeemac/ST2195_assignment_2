@@ -1,0 +1,54 @@
+---
+title: "Assignment 2"
+author: "jia en"
+date: "2023-10-27"
+output: html_document
+---
+### Load the library
+
+Install the `rvest`package if it is not yet installed
+```{r}
+if (!("rvest" %in% installed.packages())) {
+  install.packages("rvest")
+}
+library(rvest) 
+``` 
+
+### Get the csv example 
+
+Load in the html
+Visit the website, read the entire webpage and store them in a html object. 
+```{r}
+web_html <- read_html ("https://en.wikipedia.org/wiki/Comma-separated_values")
+```
+Get the csv examples under the header "Example"
+Locate the data that we need from the html page.
+It is under the section "Example", with id='Example' (which is '.'). 
+From there, find the <pre> tags, and scrap the text within the tags.  
+```{r}
+data_list <- 
+  web_html %>%
+  html_nodes(xpath='//h2[contains(.,"Example")]//following-sibling::pre') %>%
+  html_text()
+``` 
+
+Have a look of the tables : 
+```{r}
+data_list
+```
+
+
+The first element is what we want.  
+```{r}
+data <- data_list[1]
+data
+```
+### Save the csv example into a csv file
+```{r}
+write.table(data, file = "car.csv", quote = FALSE, col.names = FALSE, row.names = FALSE)
+```
+
+Reload the csv data from the file to make sure the data was saved properly.
+```{r}
+ read.csv("car.csv")
+``` 
